@@ -28,11 +28,11 @@ def IssueTokenTransaction():
     data = "issue"
     data += "@536e6f77466c616b65"   # token name: "SnowFlake"
     data += "@534643"               # token ticker: "SFC"
-    data += "@2710"                 # initial supply: 10000
+    data += "@d3c21bcecceda1000000" # initial supply: 1e24 wei - 1e6 $ESDT
     data += "@12"                   # number of decimals: 18
     data += "@63616e467265657a65@74727565@63616e57697065@74727565@63616e5061757365@74727565@63616e4d696e74@74727565@63616e4275726e@74727565@63616e55706772616465@74727565"
 
-    command = "erdpy tx new --send "
+    command = "erdpy tx new "
     command += " --pem=\"{0}\" ".format(OWNER_PEMFILE)
     command += " --data=\"{0}\" ".format(data)
     command += " --proxy=\"{0}\" ".format(PROXY_URL)
@@ -43,7 +43,7 @@ def IssueTokenTransaction():
     command += " --gas-limit {0} ".format(60000000)
 
     command += "--recall-nonce "
-    # command += " --send "
+    command += " --send "
 
     # print("Command: {0}".format(command))
 
