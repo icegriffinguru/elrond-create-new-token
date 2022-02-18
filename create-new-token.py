@@ -34,7 +34,6 @@ def IssueTokenTransaction():
 
     command = "erdpy tx new "
     command += " --pem=\"{0}\" ".format(OWNER_PEMFILE)
-    command += " --data=\"{0}\" ".format(data)
     command += " --proxy=\"{0}\" ".format(PROXY_URL)
     command += " --data=\"{0}\" ".format(data)
 
