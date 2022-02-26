@@ -1,16 +1,26 @@
 ##### - configuration - #####
-NETWORK_NAME="testnet" # devnet, testnet, mainnet
-PROXY=https://testnet-gateway.elrond.com
-CHAIN_ID="T"
+NETWORK_NAME="$1" # devnet, testnet, mainnet
+
+if [ $NETWORK_NAME = "devnet" ]; then
+    CHAIN_ID="D"
+elif [ $NETWORK_NAME = "testnet" ]; then
+    CHAIN_ID="T"
+elif [ $NETWORK_NAME = "mainnet" ]; then
+    CHAIN_ID="1"
+else
+    echo "Wrong NETWORK name, please choose betwee: devnet, testnet, mainnet !"
+    exit
+fi
+PROXY="https://${NETWORK_NAME}-gateway.elrond.com"
+DEPLOYER="./wallet/${NETWORK_NAME}/${NETWORK_NAME}-wallet.pem" # main actor pem file
 
 ESDT_ISSUE_ADDRESS=erd1qqqqqqqqqqqqqqqpqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqzllls8a5w6u
-DEPLOYER="./wallet/testnet/testnet-wallet.pem" # main actor pem file
 
-TOKEN_NAME="Sven"
-TOKEN_TICKER="SVEN"
+TOKEN_NAME="$2"
+TOKEN_TICKER="$3"
 
-TOKEN_NAME_HEX="$(echo -n ${TOKEN_NAME} | xxd -p -u | tr -d '\n')"
-TOKEN_TICKER_HEX="$(echo -n ${TOKEN_TICKER} | xxd -p -u | tr -d '\n')"
+TOKEN_NAME_HEX="$(echo "${TOKEN_NAME}" | xxd -p)"
+TOKEN_TICKER_HEX="$(echo "${TOKEN_TICKER}" | xxd -p)"
 
 # https://docs.elrond.com/developers/esdt-tokens/#issuance-of-fungible-esdt-tokens
 # initial supply: 1e24 wei - 1e6 $ESDT
@@ -19,8 +29,6 @@ DATA="issue@${TOKEN_NAME_HEX}@${TOKEN_TICKER_HEX}@d3c21bcecceda1000000@12@63616e
 
 ADDRESS=$(erdpy data load --partition ${NETWORK_NAME} --key=address)
 DEPLOY_TRANSACTION=$(erdpy data load --partition ${NETWORK_NAME} --key=deploy-transaction)
-
-echo "TEST A $1";
 
 issue_token() {
     echo "issuing token to ${NETWORK_NAME} ...";
@@ -37,4 +45,6 @@ issue_token() {
         --send || return
 }
 
-"$@"
+echo "Create EDST: ($1, $2)";
+
+issue_token
